@@ -454,7 +454,7 @@ exports.commands = {
 		let self = this;
 		Economy.readMoney(user.userid, stardust => {
 			switch (match.name) {
-				case 'customsymbol':
+				case 'symbol':
 					money = setupPrice(match, stardust);
 					success = runTransaction(money, match, user);
 					if (success) {
@@ -478,13 +478,11 @@ exports.commands = {
 					}
 					user.shopCache = false;
 					break;
-				case 'customavatar':
+				case 'avatar':
 					if (user.tokens.avatar) return self.errorReply('You already have this purchased! Use it first with /usetoken avatar, [image]');
 					money = setupPrice(match, stardust);
 					success = runTransaction(money, match, user);
 					if (success) {
-						//WL.messageSeniorStaff(user.name + " has purchased a Custom Avatar. Please contact this user to setup their Custom Avatar.");
-						//inventory.addItem('avatartoken', user);
 						user.tokens.avatar = true;
 						successfulTransaction(match, success, user, room);
 					} else {
@@ -523,8 +521,6 @@ exports.commands = {
 					money = setupPrice(match, stardust);
 					success = runTransaction(money, match, user);
 					if (success) {
-						//WL.messageSeniorStaff(user.name + " has purchased a Userlit Icon. Please contact this user to setup their Userlist Icon.");
-						//inventory.addItem('icontoken', user);
 						user.tokens.icon = true;
 						successfulTransaction(match, success, user, room);
 					} else {
