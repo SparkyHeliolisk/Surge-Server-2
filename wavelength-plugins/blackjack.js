@@ -49,7 +49,7 @@ class Blackjack extends Rooms.RoomGame {
 		this.atLeastOneJoin = false;
 
 		this.madeGame(target);
-}
+	}
 	/**
 	 * Game Setup
 	 * makeGame - announces to room that a game has been made
@@ -70,7 +70,7 @@ class Blackjack extends Rooms.RoomGame {
 	}
 	makePlayer(user) {
 		return new BlackjackPlayer(user, this);
-}
+	}
 	/**
 	 * Joining/Leaving/Viewing
 	 * joinGame - joins the game
@@ -113,7 +113,7 @@ class Blackjack extends Rooms.RoomGame {
 		if (!this.spectators[user.userid]) return this.errorMessage(user, `You are already not spectating this game.`);
 		delete this.spectators[user.userid];
 		user.sendTo(this.id, `You are no longer spectating this game.`);
-}
+	}
 	/**
 	 * Utility
 	 * errorMessage - sends a user an error message
@@ -182,7 +182,7 @@ class Blackjack extends Rooms.RoomGame {
 	slide(user) {
 		user.sendTo(this.id, `|uhtml|blackjack-${this.blackjackNumber}|`);
 		this.display('', null, user.name);
-}
+	}
 	/**
 	 * Game State Changes
 	 * start - starts the game
@@ -268,7 +268,7 @@ class Blackjack extends Rooms.RoomGame {
 		this.room.blackjack++;
 		this.clearAllTimers();
 		delete this.room.game;
-}
+	}
 	/**
 	 * Gameplay
 	 * hit - player decides to get a new card
@@ -371,7 +371,7 @@ class Blackjack extends Rooms.RoomGame {
 		}
 
 		return points;
-}
+	}
 	next() {
 		this.clearAllTimers();
 		if (Object.keys(this.players)[Object.keys(this.players).length - 1] === this.curUser && this.players[this.curUser].status !== 'playing') {
