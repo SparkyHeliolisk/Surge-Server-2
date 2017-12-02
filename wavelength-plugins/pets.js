@@ -324,4 +324,79 @@ exports.commands = {
 		if (Users.get(targetUser)) Users.get(targetUser).send("|pm|~Mr. Pet Trader|" + targetUser + "|/html <div class=\"broadcast-green\">" + Chat.escapeHTML(user.name) + " has initiated a trade with you. Click <button name=\"send\" value=\"/trades last\">here</button> or use <b>/trades</b> to view your pending trade requests.</div>");
 		user.send("|pm|~Mr. Pet Trader|" + user.userid + "|/html <div class=\"broadcast-green\">Your trade with " + Chat.escapeHTML(targetUser) + " has been initiated. Click <button name=\"send\" value=\"/trades last\">here</button> or use <b>/trades</b> to view your pending trade requests.</div>");
 	},
+	pettrades: 'viewpettrades',
+	viewpettrades: function (target, room, user) {
+		const popup = "|html|<center><b><font color=\"blue\">Trade Manager</font></b></center><br />";
+		let allTrades = Db('pettrades').object();
+		let userTrades = [];
+		for (let id in allTrades) {
+			let trade = allTrades[id];
+			if (trade.from === user.userid || trade.to === user.userid) {
+				userTrades.push(trade);
+			}
+		}
+		if (!userTrades.length) return user.popup(popup + "<center>You have no pending trades.</center>");
+		if (target === "last") {
+			target = userTrades.length - 1;
+		} else {
+			if (!target) target = 0;
+			target = parseInt(target);
+			if (isNaN(target)) target = 0;
+			if (target < 0) target = 0;
+			if (target >= userTrades.length) target = userTrades.length - 1;
+		}
+		let displayTrade = userTrades[target];
+		const acceptReject = '<center>' + (displayTrade.from === user.userid ? "" : '<button name="send" value="/tradeaction accept, ' + displayTrade.id + '" style=\"background-color:green;height:30px\"><b>Accept</b></button>') +
+				'&nbsp;&nbsp;' +
+				'<button name="send" value="/tradeaction ' + (displayTrade.from === user.userid ? "cancel" : "reject") + ', ' + displayTrade.id + '" style=\"background-color:red;height:30px\"><b>' + (displayTrade.from === user.userid ? "Cancel" : "Reject") + '</b></button></center>' +
+				'<br /><br />';
+		let pet = pets[(displayTrade.from === user.userid ? displayTrade.fromExchange : displayTrade.toExchange)];
+		let petImage = '<img src="' + pet.pet + '" height=250>';
+		let petRarityPoints = '(<font color="' + colors[pet.rarity] + '">' + pet.rarity + '</font> - ' + pet.points + ')<br />';
+		let userSideDisplay = '<center>' + user.userid + '<br />' + petImage + "<br />" + petRarityPoints + '</center>';
+		pet = pets[(displayTrade.from !== user.userid ? displayTrade.fromExchange : displayTrade.toExchange)];
+		petImage = '<img src="' + pet.pet + '" height=250>';
+		petRarityPoints = '(<font color="' + colors[pet.rarity] + '">' + pet.rarity + '</font> - ' + pet.points + ')<br />';
+		let targetSideDisplay = "<center>" + (displayTrade.from !== user.userid ? displayTrade.from : displayTrade.to) + '<br />' + petImage + "<br />" + petRarityPoints + "</center>";
+		let tradeScreen = popup +
+			 '<center><table><tr><td>' +
+			 userSideDisplay +
+			 '</td><td>' +
+			 targetSideDisplay +
+			 '</td></tr></table></center><br />' +
+			 acceptReject;
+		let navigationButtons;
+		if (userTrades.length === 1) {
+			navigationButtons = '<center><button style="background-color:deepskyblue;height:30px;width:30px">1</button></center>';
+		} else {
+			let min = '<button style="background-color:lightblue;height:30px;width:30px" name="send" value="/viewpettrades 0">1</button>&nbsp;&nbsp;&nbsp;';
+			let max = '&nbsp;&nbsp;&nbsp;<button style="background-color:lightblue;height:30px;width:30px" name="send" value="/viewpettrades last">' + (userTrades.length) + '</button>';
+			if (target === 0) min = min.replace("background-color:lightblue;height:30px", "background-color:deepskyblue;height:30px");
+			if (target === userTrades.length - 1) max = max.replace("background-color:lightblue;height:30px", "background-color:deepskyblue;height:30px");
+			let middle = "";
+			let range = Object.keys(userTrades).slice(1, userTrades.length - 1);
+			if (range.length !== 0) {
+				if (range.length > 5) {
+					let displayRange = [target - 2, target - 1, target, target + 1, target + 2].filter(i => {
+						return i > 0 && i <= range.length;
+					});
+					middle = (displayRange[0] !== 1 ? "... " : "") + displayRange.map(n => {
+						n = parseInt(n);
+						let style = n === target ? "background-color:deepskyblue;height:30px;width:30px" : "background-color:aliceblue;height:30px;width:30px";
+						return '<button style="' + style + '" name="send" value="/viewpettrades ' + n + '">' + (n + 1) + '</button>';
+					}).join("&nbsp;") + (displayRange[displayRange.length - 1] !== range.length ? " ..." : "");
+				} else {
+					middle = range.map(n => {
+						n = parseInt(n);
+						let style = n === target ? "background-color:deepskyblue;height:30px;width:30px" : "background-color:aliceblue;height:30px;width:30px";
+						return '<button style="' + style + '" name="send" value="/viewpettrades ' + n + '">' + (n + 1) + '</button>';
+					}).join("&nbsp;");
+				}
+			}
+			navigationButtons = "<center>" + min + middle + max + "</center>";
+		}
+		user.lastTradeCommand = "/viewpettrades " + target;
+		tradeScreen += navigationButtons;
+		user.popup(tradeScreen);
+	},
 };
