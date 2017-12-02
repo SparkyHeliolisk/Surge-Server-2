@@ -181,7 +181,7 @@ exports.commands = {
 			/*"<u><b>Retired Staff:</b></u><br />" +
 			"<br />" +*/
 			"<u><b>Special Thanks:</b></u><br />" +
-			"- Wavelength For The Plugins<br />" +
+			"- Wavelength and Exiled For The Plugins<br />" +
 			"- Our Staff Members<br />" +
 			"- Our Regular Users<br />";
 		user.popup(popup);
