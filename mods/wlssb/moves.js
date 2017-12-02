@@ -47,6 +47,29 @@ exports.BattleMovedex = {
 		target: "normal",
 		type: "Ghost",
 	},
+	// Surge BoT
+	kill: {
+		category: "Special",
+		accuracy: true,
+		basePower: 100000000000000000000000000,
+		id: ".kill",
+		isNonstandard: true,
+		name: ".Kill",
+		pp: 1,
+		noPPBoosts: true,
+		priority: 5,
+		selfdestruct: "yes",
+		onPrepareHit: function (target, source, move) {
+			this.attrLastMove('[still]');
+			this.add('-anim', source, "Explosion", target);
+		},
+		desc: "No Effect.",
+		onHit: function (target, source, move) {
+			this.add('c|*Surge BoT|KILL BYE Surge BoT');
+		},
+		target: "normal",
+		type: "Electric",
+	},
 	// SparkyHeliolisk
 	sparkblast: {
 		category: "Special",
