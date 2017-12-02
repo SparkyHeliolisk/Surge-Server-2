@@ -258,9 +258,6 @@ class RandomSeasonalRegStaffTeams extends RandomTeams {
 				},
 				nature: 'Modest',
 			},
-			
-		
-		
 		};
 		// convert moves to ids.
 		for (let k in sets) {
