@@ -167,8 +167,7 @@ exports.commands = {
 			"<br />" +
 			"<u><b>Server Maintainers:</u></b><br />" +
 			"- " + WL.nameColor('Alliance Sky', true) + " (Owner, Sysadmin, Policy Admin, Server Host, Development)<br />" +
-			"- " + WL.nameColor('HoeenHero', true) + " (Main Developer)<br />" +
-			"- " + WL.nameColor('Insist', true) + " (Main Developer)<br />" +
+			
 			"<br />" +
 			"<u><b>Major Contributors:</b></u><br />" +
 			"- " + WL.nameColor('Shivay', true) + " (Server Admin, Development, CSS)<br />" +
@@ -184,7 +183,8 @@ exports.commands = {
 			"<br />" +*/
 			"<u><b>Special Thanks:</b></u><br />" +
 			"- Our Staff Members<br />" +
-			"- Our Regular Users<br />";
+			"- Our Regular Users<br />"+
+			"- Wavelength For Most Of Our Plugins<br />":
 		user.popup(popup);
 	},
 
