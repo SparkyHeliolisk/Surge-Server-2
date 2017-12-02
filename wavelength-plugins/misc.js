@@ -167,14 +167,14 @@ exports.commands = {
 			"<br />" +
 			"<u><b>Server Maintainers:</u></b><br />" +
 			"- " + WL.nameColor('Alliance Sky', true) + " (Owner, Sysadmin, Policy Admin, Server Host, Development)<br />" +
-			"- " + WL.nameColor('HoeenHero', true) + " (Main Developer)<br />" +
-			"- " + WL.nameColor('Insist', true) + " (Main Developer)<br />" +
 			"<br />" +
 			"<u><b>Major Contributors:</b></u><br />" +
 			"- " + WL.nameColor('Shivay', true) + " (Server Admin, Development, CSS)<br />" +
 			"- " + WL.nameColor('Princess Qtie', true) + " (Development)<br />" +
 			"- " + WL.nameColor('Anrin N', true) + " (Development)<br/>" +
 			 "- " + WL.nameColor('SparkyHeliolisk', true) + " (Development, SSSB Lead)<br />" +
+			 "- " + WL.nameColor('Hoeen Hero', true) + " (Base Repository)<br />" +
+			 "- " + WL.nameColor('Insist', true) + " (Base Repository)<br />" +
 			 "<br />" +
 			"<u><b>Contributors:</b></u><br />" +
 			"- " + WL.nameColor('Snorlax The Rain', true) + " (Manager)<br />" +
