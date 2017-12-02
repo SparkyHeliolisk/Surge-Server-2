@@ -3,7 +3,7 @@
       "display":"Account Customization",
       "info":"Customize your account with a variety of options; some selections may require an Upper Staff member to assist you.",
       "items":{
-         "customsymbol":{
+         "symbol":{
             "display":"Custom Symbol",
             "price":2,
             "currency":"bucks",
@@ -18,7 +18,7 @@
             "onbuy":"You have purchased a Global Declare. To redeem your Global Declare, do /usetoken declare, [message you want declared]",
             "info":"Globally declares a message to every room on the server. (Cannot be used for server advertisements, message must be approved by an administrator.)"
          },
-         "customavatar":{
+         "avatar":{
             "display":"Custom Avatar",
             "price":10,
             "currency":"bucks", 
