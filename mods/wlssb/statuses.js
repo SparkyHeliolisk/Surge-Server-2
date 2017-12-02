@@ -24,6 +24,18 @@ exports.BattleStatuses = {
 	        this.add('c', '~Prince Sky', 'Every dog has his day and this is yours!');
 	    },
 	},
+	sparkyheliolisk: {
+	    exists: true,
+	    onStart: function () {
+	        this.add('c', '@SparkyHeliolisk', 'PR Added');
+	    },
+	    onSwitchOut: function (pokemon) {
+	        this.add('c', '@SparkyHeliolisk', 'PR Merged');
+	    },
+	    onFaint: function (pokemon) {
+	        this.add('c', '@SparkyHeliolisk', 'PR Deleted');
+	    },
+	},
 	anrinn: {
 		exists: true,
 		onStart: function () {
