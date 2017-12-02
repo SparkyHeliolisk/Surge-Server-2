@@ -119,7 +119,7 @@ class RandomSeasonalRegStaffTeams extends RandomTeams {
 				nature: 'Adamant',
 			},
 			// Global Bots
-				'*Surge BoT': {
+			'*Surge BoT': {
 				species: 'Magnemite',
 				ability: 'Hotpatch',
 				item: 'Leftovers',
