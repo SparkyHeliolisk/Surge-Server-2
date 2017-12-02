@@ -184,7 +184,7 @@ exports.commands = {
 			"<u><b>Special Thanks:</b></u><br />" +
 			"- Our Staff Members<br />" +
 			"- Our Regular Users<br />"+
-			"- Wavelength For Most Of Our Plugins<br />":
+			"- Wavelength For Most Of Our Plugins<br />";
 		user.popup(popup);
 	},
 
