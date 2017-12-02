@@ -289,7 +289,7 @@ exports.commands = {
 		},
 	},
 	pettrade: 'tradepet',
-	pettrade: function (target, room, user) {
+	tradepet: function (target, room, user) {
 		if (!target) return this.errorReply("/tradepet [pet ID], [user], [targetPet ID]");
 		let parts = target.split(",").map(p => toId(p));
 		if (parts.length !== 3) return this.errorReply("/tradepet [your pet's ID], [targetUser], [targetPet ID]");
