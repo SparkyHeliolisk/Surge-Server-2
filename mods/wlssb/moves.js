@@ -28,7 +28,7 @@ exports.BattleMovedex = {
 	sparkblast: {
 		category: "Special",
 		accuracy: true,
-		basePower: 100,
+		basePower: 150,
 		id: "sparkblast",
 		isNonstandard: true,
 		name: "Spark Blast",
