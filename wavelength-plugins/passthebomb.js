@@ -276,15 +276,16 @@ exports.commands = {
 		help: function (target, room, user) {
 			if (!this.runBroadcast()) return;
 			this.sendReplyBox(
-				'All commands is nestled under name <code>passthebomb/ptb</code>.',
-				'<code>start [seconds]</code> - Starts a game of Pass The Bomb in the room. The first round will begin after the mentioned number of seconds (1 minute by default). Requires @ or higher to use.',
-				'<code>join/leave</code> - Joins/Leaves a game of Pass The Bomb.',
-				'<code>forcestart</code> - Forcibly starts the first round of a game. Requires @ or higher to use.',
-				'<code>dq [user]</code> - Disqualifies a player from a game of Pass The Bomb. Requires @ or higher to use.',
-				'<code>p [user]</code> - Passes the bomb to another player. (NOTE: Spamming this can get you disqualified)',
-				'<code>end</code> - Forcibly ends a game of Pass The Bomb. Requires @ or higher to use.',
-				'<code>on/off</code> - Enable/Disable the game of pass the bomb in room. Requires # or higher to use.',
-				'(/ptb is a valid alias for /passthebomb)'
+				'<div class="infobox"><center>All commands is nestled under name <code>passthebomb/ptb</code>.</center>' +
+				'<hr width="80%">' +
+				'<code>start [seconds]</code> - Starts a game of Pass The Bomb in the room. The first round will begin after the mentioned number of seconds (1 minute by default). Requires @ or higher to use.<br>' +
+				'<code>join/leave</code> - Joins/Leaves a game of Pass The Bomb.<br>' +
+				'<code>forcestart</code> - Forcibly starts the first round of a game. Requires @ or higher to use.<br>' +
+				'<code>dq [user]</code> - Disqualifies a player from a game of Pass The Bomb. Requires @ or higher to use.<br>' +
+				'<code>p [user]</code> - Passes the bomb to another player. (NOTE: Spamming this can get you disqualified)<br>' +
+				'<code>end</code> - Forcibly ends a game of Pass The Bomb. Requires @ or higher to use.<br>' +
+				'<code>on/off</code> - Enable/Disable the game of pass the bomb in room. Requires # or higher to use.<br>' +
+				'(/ptb is a valid alias for /passthebomb)<br>'
 			);
 		},
 	},
