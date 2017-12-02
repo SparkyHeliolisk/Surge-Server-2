@@ -118,36 +118,6 @@ class RandomSeasonalRegStaffTeams extends RandomTeams {
 				},
 				nature: 'Adamant',
 			},
-			'~Mosmero': {
-				species: 'Gastly',
-				ability: 'Mosmic Power',
-				item: 'Life Orb',
-				gender: '',
-				moves: ['Shadow Ball', 'Sludge Bomb', 'Giga Drain',
-				],
-				signatureMove: 'Mosmero Beam',
-				evs: {
-					hp: 4,
-					spa: 252,
-					spe: 252,
-				},
-				nature: 'Modest',
-			},
-			'~Tsunami Prince': {
-				species: 'Darkrai',
-				ability: 'Death Boost',
-				item: 'Darkiniumz',
-				gender: 'M',
-				moves: ['Nightmare', 'Dark Pulse', 'Shadow Ball',
-				],
-				signatureMove: 'Overpower',
-				evs: {
-					spa: 252,
-					spe: 252,
-					hp: 6,
-				},
-				nature: 'Timid',
-			},
 			// Global Moderators:
 			'@SparkyHeliolisk': {
 				species: 'Heliolisk',
