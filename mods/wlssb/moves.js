@@ -34,7 +34,7 @@ exports.BattleMovedex = {
 		name: "Shadow Hunter",
 		pp: 5,
 		noPPBoosts: true,
-		priority: 5,
+		priority: 0,
 		selfdestruct: "no",
 		onPrepareHit: function (target, source, move) {
 			this.attrLastMove('[still]');
