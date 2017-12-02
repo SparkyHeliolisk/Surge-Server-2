@@ -201,7 +201,7 @@ exports.commands = {
 		off: 'disable',
 		disable: function (target, room, user) {
 			if (!this.can('gamemanagement', null, room)) return;
-         if (room.ptbDisabled) {
+			if (room.ptbDisabled) {
 				return this.errorReply("Pass the bomb is already disabled in this room.");
 			}
 			room.ptbDisabled = true;
@@ -211,19 +211,19 @@ exports.commands = {
 			}
 			return this.sendReply("Pass the bomb has been disabled for this room.");
 		},
-      on: 'enable',
-      enable: function (target, room, user) {
-         if (!this.can('gamemanagement', null, room)) return;
-         if (!room.ptbDisabled) {
-            return this.errorReply("Pass the bomb is already enabled in this room.");
-         }
-         delete room.ptbDisabled;
-         if (room.chatRoomData) {
-            delete room.chatRoomData.ptbDisabled;
-            Rooms.global.writeChatRoomData();
-         }
-         return this.sendReply("Pass the bomb has been enabled for this room.");
-      },
+		on: 'enable',
+		enable: function (target, room, user) {
+			if (!this.can('gamemanagement', null, room)) return;
+			if (!room.ptbDisabled) {
+				return this.errorReply("Pass the bomb is already enabled in this room.");
+			}
+			delete room.ptbDisabled;
+			if (room.chatRoomData) {
+				delete room.chatRoomData.ptbDisabled;
+				Rooms.global.writeChatRoomData();
+			}
+			return this.sendReply("Pass the bomb has been enabled for this room.");
+		},
 		create: 'start',
 		start: function (target, room, user) {
 			if (room.ptbDisabled) return this.errorReply("Pass the bomb is currently disabled for this room.");
