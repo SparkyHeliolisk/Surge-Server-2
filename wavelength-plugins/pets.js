@@ -8,7 +8,6 @@ Fixed And Modified By Prince Sky.
 const uuid = require('uuid');
 const pets = require('../wavelength-plugins/pets-data.js');
 let color = require('../config/color');
-let rankLadder = require('../rank-ladder');
 
 const colors = {
 	Mythic: '#D82A2A',
@@ -54,12 +53,12 @@ function addPet(name, pet) {
 	newPet.rarity = pets[pet].rarity;
 	newPet.points = pets[pet].points;
 	let userid = toId(name);
-	Db('pets').set(userid, Db('pets').get(userid, []).concat([newPet]));
-	Db('points').set(userid, Db('points').get(userid, 0) + newPet.points);
+	Pb('pets').set(userid, Pb('pets').get(userid, []).concat([newPet]));
+	Pb('points').set(userid, Pb('points').get(userid, 0) + newPet.points);
 }
 
 function removePet(petTitle, userid) {
-	let userPets = Db('pets').get(userid, []);
+	let userPets = Pb('pets').get(userid, []);
 	let idx = -1;// search for index of the pet
 	for (let i = 0; i < userPets.length; i++) {
 		let pet = userPets[i];
@@ -69,12 +68,12 @@ function removePet(petTitle, userid) {
 	}
 	if (idx === -1) return false;// remove it
 	userPets.splice(idx, 1);//set it in db
-	Db('userPets').set(userid, userPets);
+	Pb('userPets').set(userid, userPets);
 	return true;
 }
 
 function getPetPointTotal(userid) {
-	let totalPets = Db('pets').get(userid, []);
+	let totalPets = Pb('pets').get(userid, []);
 	let total = 0; for (let i = 0; i < pets.length; i++) {
 		total += totalPets[i].points;
 	}
@@ -95,7 +94,7 @@ exports.commands = {
 			if (!this.runBroadcast()) return;
 			let userid = user.userid;
 			if (target) userid = toId(target);
-			const pets = Db('pets').get(userid, []);
+			const pets = Pb('pets').get(userid, []);
 			if (!pets.length) return this.sendReplyBox(userid + " has no pets.");
 			const petsMapping = pets.map(function (pet) {
 				return '<button name="send" value="/pet info ' + pet.title + '" style="border-radius: 12px; box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2) inset;" class="pet-button"><img src="' + pet.pet + '" height="80" title="' + pet.name + '"></button>';
@@ -115,7 +114,7 @@ exports.commands = {
 		},
 		ladder: function (target, room, user) {
 			if (!this.runBroadcast()) return;
-			let keys = Object.keys(Db('points').object()).map(function (name) {
+			let keys = Object.keys(Pb('points').object()).map(function (name) {
 				return {name: name, points: getPetPointTotal(name)};
 			});
 			if (!keys.length) return this.sendReplyBox("Pet ladder is empty.");
@@ -254,7 +253,7 @@ exports.commands = {
 				// rarity display
 				let petRarityPoints = '<b>Rarity: </b><font color="' + colors[pet.rarity] + '">' + pet.rarity + '</font> (' + pet.points + ')<br />';
 				// get users that have the pet
-				let allPetUsers = Db('pets').object();
+				let allPetUsers = Pb('pets').object();
 				let petHolders = [];
 				// dont allow duplicates
 				for (let u in petUsers) {
@@ -274,7 +273,7 @@ exports.commands = {
 				petDisplay = "<center><table><tr>" +
 					"<td>" + petImage + "</td>" +
 					"<td>" +
-					petName + petId + petRarityPoints + petgen +
+					petName + petId + petRarityPoints +
 					"<b>Users with this pet:</b><br />" +
 					"<div style=\"max-height: 130px; overflow-y: scroll\">" +
 					petHolders.join("<br />") + "<br />" +
@@ -296,7 +295,7 @@ exports.commands = {
 		let match;
 		let forTrade = parts[0];
 		match = false;
-		let userPets = Db('pets').get(user.userid, []);
+		let userPets = Pb('pets').get(user.userid, []);
 		for (let i = 0; i < userPets.length; i++) {
 			if (userPets[i].title === forTrade) {
 				match = true;
@@ -306,7 +305,7 @@ exports.commands = {
 		if (!match) return this.errorReply("You don't have that pet!");
 		let targetUser = parts[1];
 		let targetTrade = parts[2];
-		let targetPets = Db('pets').get(targetUser, []);
+		let targetPets = Pb('pets').get(targetUser, []);
 		match = false;
 		for (let i = 0; i < targetPets.length; i++) {
 			if (targetPets[i].title === targetTrade) {
@@ -319,7 +318,7 @@ exports.commands = {
 		let newTrade = {
 			from: user.userid, to: targetUser, fromExchange: forTrade, toExchange: targetTrade, id: tradeId,
 		};
-		Db('pettrades').set(tradeId, newTrade);
+		Pb('pettrades').set(tradeId, newTrade);
 		this.sendReply("Your trade has been taken submitted.");
 		if (Users.get(targetUser)) Users.get(targetUser).send("|pm|~Mr. Pet Trader|" + targetUser + "|/html <div class=\"broadcast-green\">" + Chat.escapeHTML(user.name) + " has initiated a trade with you. Click <button name=\"send\" value=\"/trades last\">here</button> or use <b>/trades</b> to view your pending trade requests.</div>");
 		user.send("|pm|~Mr. Pet Trader|" + user.userid + "|/html <div class=\"broadcast-green\">Your trade with " + Chat.escapeHTML(targetUser) + " has been initiated. Click <button name=\"send\" value=\"/trades last\">here</button> or use <b>/trades</b> to view your pending trade requests.</div>");
@@ -327,7 +326,7 @@ exports.commands = {
 	pettrades: 'viewpettrades',
 	viewpettrades: function (target, room, user) {
 		const popup = "|html|<center><b><font color=\"blue\">Trade Manager</font></b></center><br />";
-		let allTrades = Db('pettrades').object();
+		let allTrades = Pb('pettrades').object();
 		let userTrades = [];
 		for (let id in allTrades) {
 			let trade = allTrades[id];
@@ -398,5 +397,45 @@ exports.commands = {
 		user.lastTradeCommand = "/viewpettrades " + target;
 		tradeScreen += navigationButtons;
 		user.popup(tradeScreen);
+	},
+	petshelp: function (target, room, user) {
+		if (!this.runBroadcast()) return;
+		return this.sendReplyBox("<center><b><u>Cosmos Pets System:</u></b></center><br>" +
+										 "<b>/showcase</b> - Shows a display of all pets that you have.<br>" +
+										 "<b>/pet</b> - Shows data and information on any specifc pet.<br>" +
+										 "<b>/petladder</b> - Shows the leaderboard of the users with the most pet points.<br>" +
+										 "<b>/petsearch</b> - Opens a window allowing you to search through all the pets.<br>" +
+										 "<b>/trade</b> - /trade [user\'s pet], [targetUser], [targetUser\'s pet] - starts a new trade request.<br>" +
+										 "<b>/trades</b> - View your current pending trade requests.<br>" +
+										 "<b>/transferpet</b> - /transferpet [targetUser], [pet] - transfers a pet to the target user.<br>" +
+										 "<b>/transferallpets</b> - /transferallpets [user] - transfers all of your pets to the target user.<br>"
+		);
+	},
+	givepet: 'spawnpet',
+	spawnpet: function (target, room, user, connection, cmd) {
+		if (!this.can('declare')) return false;
+		if (!target) return this.errorReply("/givepet [user], [pet ID]");
+		let parts = target.split(",").map(p => toId(p));
+		let targetUser = parts.shift();
+		let pet = parts[0].trim();
+		if (!targetUser || !pet) return this.errorReply("/givepet [user], [pet ID]");
+		if (!pets.hasOwnProperty(pet)) return this.sendReply(target + ": pet not found.");
+		pet = pets[pet];
+		addPet(targetUser, pet.title);
+		user.popup("You have successfully given " + pet.name + " to " + targetUser + ".");
+		this.logModCommand(user.name + "gave the pet '" + pet.name + "' to " + targetUser + ".");
+	},
+	takepet: function (target, room, user, connection, cmd) {
+		if (!this.can('declare')) return false;
+		if (!target) return this.errorReply("/takepet [user], [pet ID]");
+		let parts = target.split(",").map(p => toId(p));
+		let targetUser = parts.shift();
+		let pet = parts[0].trim();
+		if (!targetUser || !pet) return this.errorReply("/takepet [user], [pet ID]");
+		if (!pets.hasOwnProperty(pet)) return this.sendReply(target + ": pet not found.");
+		pet = pets[pet];
+		removePet(pet.title, targetUser);
+		user.popup("You have successfully taken " + pet.name + " from " + targetUser + ".");
+		this.logModCommand(user.name + " took the pet '" + pet.name + "' from " + targetUser + ".");
 	},
 };
