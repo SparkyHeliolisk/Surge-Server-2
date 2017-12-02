@@ -165,6 +165,14 @@ class RoomSettings {
 			return `${this.button('Pass the bomb  enabled', true)} ${this.button('off', null, 'pass the bomb disable')}`;
 		}
 	}
+	bj() {
+		if (!this.user.can('editroom', null, this.room)) return this.button(this.room.blackjackDisabled ? 'off' : 'Black Jack Enabled', true);
+		if (this.room.blackjackDisabled) {
+			return `${this.button('Black jack enabled', null, 'black jack disabled')} ${this.button('off', true)}`;
+		} else {
+			return `${this.button('Black jack enabled', true)} ${this.button('off', null, 'black jack disable')}`;
+		}
+	}
 	generateDisplay(user, room, connection) {
 		let output = Chat.html`<div class="infobox">Room Settings for ${this.room.title}<br />`;
 		output += `<strong>Modchat:</strong> <br />${this.modchat()}<br />`;
@@ -178,6 +186,7 @@ class RoomSettings {
 		output += `<strong>Panagrams:</strong> <br />${this.pGames()}<br />`;
 		output += `<strong>Hangman:</strong> <br />${this.hangman()}<br />`;
 		output += `<strong>Pass The Bomb:</strong> <br />${this.ptb()}<br />`;
+		output += `<strong>Black Jack:</strong> <br />${this.bj()}<br />`;
 		output += '</div>';
 
 		this.user.sendTo(this.room, `|uhtml${(this.sameCommand ? '' : 'change')}|roomsettings|${output}`);
