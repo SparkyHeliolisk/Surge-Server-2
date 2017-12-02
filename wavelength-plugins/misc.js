@@ -174,6 +174,8 @@ exports.commands = {
 			"- " + WL.nameColor('Princess Qtie', true) + " (Development)<br />" +
 			"- " + WL.nameColor('Anrin N', true) + " (Development)<br/>" +
 			 "- " + WL.nameColor('SparkyHeliolisk', true) + " (Development, SSSB Lead)<br />" +
+			 "- " + WL.nameColor('Hoeen Hero', true) + " (Base Repository)<br />" +
+			 "- " + WL.nameColor('Insist', true) + " (Base Repository)<br />" +
 			 "<br />" +
 			"<u><b>Contributors:</b></u><br />" +
 			"- " + WL.nameColor('Snorlax The Rain', true) + " (Manager)<br />" +
@@ -183,8 +185,7 @@ exports.commands = {
 			"<br />" +*/
 			"<u><b>Special Thanks:</b></u><br />" +
 			"- Our Staff Members<br />" +
-			"- Our Regular Users<br />"+
-			"- Wavelength For Most Of Our Plugins<br />";
+			"- Our Regular Users<br />";
 		user.popup(popup);
 	},
 
