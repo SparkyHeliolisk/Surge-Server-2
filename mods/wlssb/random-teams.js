@@ -118,6 +118,22 @@ class RandomSeasonalRegStaffTeams extends RandomTeams {
 				},
 				nature: 'Adamant',
 			},
+			// Global Bots
+				'*Surge BoT': {
+				species: 'Magnemite',
+				ability: 'Hotpatch',
+				item: 'Leftovers',
+				gender: 'M',
+				moves: ['Flash Cannon', 'Thunderbolt', 'Signal Beam',
+				],
+				signatureMove: ".kill",
+				evs: {
+					spa: 252,
+					spe: 252,
+					spd: 4,
+				},
+				nature: 'Modest',
+			},
 			// Global Moderators:
 			'@SparkyHeliolisk': {
 				species: 'Heliolisk',
