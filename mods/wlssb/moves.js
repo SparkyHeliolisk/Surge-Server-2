@@ -24,6 +24,29 @@ exports.BattleMovedex = {
 		target: "normal",
 		type: "Dragon",
 	},
+	// NoPat
+	shadowhunter: {
+		category: "Special",
+		accuracy: true,
+		basePower: 130,
+		id: "shadowhunter",
+		isNonstandard: true,
+		name: "Shadow Hunter",
+		pp: 5,
+		noPPBoosts: true,
+		priority: 5,
+		selfdestruct: "no",
+		onPrepareHit: function (target, source, move) {
+			this.attrLastMove('[still]');
+			this.add('-anim', source, "Shadow Ball", target);
+		},
+		desc: "No Effect.",
+		onHit: function (target, source, move) {
+			this.add('c|%NoPat|feelsgd');
+		},
+		target: "normal",
+		type: "Ghost",
+	},
 	// SparkyHeliolisk
 	sparkblast: {
 		category: "Special",
