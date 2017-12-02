@@ -167,7 +167,6 @@ exports.commands = {
 			"<br />" +
 			"<u><b>Server Maintainers:</u></b><br />" +
 			"- " + WL.nameColor('Alliance Sky', true) + " (Owner, Sysadmin, Policy Admin, Server Host, Development)<br />" +
-			
 			"<br />" +
 			"<u><b>Major Contributors:</b></u><br />" +
 			"- " + WL.nameColor('Shivay', true) + " (Server Admin, Development, CSS)<br />" +
