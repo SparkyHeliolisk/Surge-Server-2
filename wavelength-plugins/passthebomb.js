@@ -18,7 +18,7 @@ class PassTheBomb extends Rooms.RoomGame {
 
 		this.room.add('|uhtml|bomb' + this.room.bombCount + this.round + '|<div class="broadcast-green"><center>A game of <strong>Pass the Bomb</strong> has been started!<br>' +
 			'The game will begin in <strong>' + seconds + '</strong> seconds!<br>' +
-			'<button name = "send" value = "/passthebomb join">Join!</button></center></div>'
+			'<button name = "send" value = "/ptb join">Join!</button></center></div>'
 		);
 		this.timer = setTimeout(() => {
 			if (this.players.size < 2) {
@@ -31,7 +31,7 @@ class PassTheBomb extends Rooms.RoomGame {
 	updateJoins() {
 		let msg = 'bomb' + this.room.bombCount + this.round + '|<div class="broadcast-green"><center>A game of <strong>Pass the Bomb</strong> has been started!<br>' +
 			'The game will begin in <strong>' + Math.round((this.timeLeft - Date.now()) / 1000) + '</strong> seconds<br>' +
-			'<button name = "send" value = "/passthebomb join">Join!</button></center>';
+			'<button name = "send" value = "/ptb join">Join!</button></center>';
 		if (this.players.size > 0) {
 			msg += '<center><strong>' + this.players.size + '</strong> ' + (this.players.size === 1 ? 'user has' : 'users have') + ' joined: ' + Array.from(this.players).map(player => WL.nameColor(player[1].name)).join(', ') + '</center>';
 		}
@@ -74,7 +74,7 @@ class PassTheBomb extends Rooms.RoomGame {
 	getMsg() {
 		let msg = 'bomb' + this.room.bombCount + this.round + '|<div class="broadcast-green"><center><strong>Round ' + this.round + '</strong><br>' +
 			'Players: ' + this.getSurvivors().map(player => WL.nameColor(player[1].name)).join(', ') +
-			'<br><small>Use /pb or /passbomb [player] to Pass The Bomb to another player!</small>';
+			'<br><small>Use /ptb p or /ptb pass [player] to Pass The Bomb to another player!</small>';
 		return msg;
 	}
 	nextRound() {
@@ -195,16 +195,13 @@ class PassTheBomb extends Rooms.RoomGame {
 		delete this.room.passthebomb;
 	}
 }
-
-let commands = {
-	'': 'help',
-	help: function () {
-		this.parse('/help passthebomb');
-	},
-	off: 'disable',
+exports.commands = {
+	ptb: 'passthebomb',
+	passthebomb: {
+		off: 'disable',
 		disable: function (target, room, user) {
 			if (!this.can('gamemanagement', null, room)) return;
-			if (room.ptbDisabled) {
+         if (room.ptbDisabled) {
 				return this.errorReply("Pass the bomb is already disabled in this room.");
 			}
 			room.ptbDisabled = true;
@@ -214,92 +211,81 @@ let commands = {
 			}
 			return this.sendReply("Pass the bomb has been disabled for this room.");
 		},
-		on: 'enable',
-		enable: function (target, room, user) {
-			if (!this.can('gamemanagement', null, room)) return;
-			if (!room.ptbDisabled) {
-				return this.errorReply("Pass the bomb is already enabled in this room.");
-			}
-			delete room.ptbDisabled;
-			if (room.chatRoomData) {
-				delete room.chatRoomData.ptbDisabled;
-				Rooms.global.writeChatRoomData();
-			}
-			return this.sendReply("Pass the bomb has been enabled for this room.");
+      on: 'enable',
+      enable: function (target, room, user) {
+         if (!this.can('gamemanagement', null, room)) return;
+         if (!room.ptbDisabled) {
+            return this.errorReply("Pass the bomb is already enabled in this room.");
+         }
+         delete room.ptbDisabled;
+         if (room.chatRoomData) {
+            delete room.chatRoomData.ptbDisabled;
+            Rooms.global.writeChatRoomData();
+         }
+         return this.sendReply("Pass the bomb has been enabled for this room.");
+      },
+		create: 'start',
+		start: function (target, room, user) {
+			if (room.ptbDisabled) return this.errorReply("Pass the bomb is currently disabled for this room.");
+			if (room.passthebomb) return this.sendReply("There is already a game of Pass The Bomb going on in this room.");
+			if (!this.canTalk()) return this.errorReply("You cannot use this while unable to speak.");
+			if (!user.can('broadcast', null, room) && room.id !== 'lobby') return this.errorReply("You must be ranked & or higher in this room to start a game of pass the bomb outside the lobby.");
+			if (!user.can('lock', null, room)) return this.sendReply("You must be ranked & or higher in this room to start a game of Pass The Bomb.");
+			if (!target || !target.trim()) target = '60';
+			if (isNaN(target)) return this.sendReply('\'' + target + '\' is not a valid number.');
+			if (target.includes('.') || target > 180 || target < 10) return this.sendReply('The number of seconds needs to be a non-decimal number between 10 and 180.');
+			room.passthebomb = new PassTheBomb(room, Number(target));
 		},
-	'new': 'start',
-	begin: 'start',
-	start: function (target, room, user) {
-		if (room.ptbDisabled) return this.errorReply("Pass the bomb is currently disabled for this room.");
-		if (room.passthebomb) return this.sendReply("There is already a game of Pass The Bomb going on in this room.");
-		if (!this.canTalk()) return this.errorReply("You cannot use this while unable to speak.");
-		if (!user.can('broadcast', null, room) && room.id !== 'lobby') return this.errorReply("You must be ranked & or higher in this room to start a game of pass the bomb outside the lobby.");
-		if (!user.can('lock', null, room)) return this.sendReply("You must be ranked & or higher in this room to start a game of Pass The Bomb.");
-
-		if (!target || !target.trim()) target = '60';
-		if (isNaN(target)) return this.sendReply('\'' + target + '\' is not a valid number.');
-		if (target.includes('.') || target > 180 || target < 10) return this.sendReply('The number of seconds needs to be a non-decimal number between 10 and 180.');
-
-		room.passthebomb = new PassTheBomb(room, Number(target));
+		join: function (target, room, user) {
+			if (!room.passthebomb) return this.sendReply("There is no game of Pass The Bomb going on in this room.");
+			if (!this.canTalk()) return this.errorReply("You cannot use this while unable to speak.");
+			room.passthebomb.join(user, this);
+		},
+		leave: function (target, room, user) {
+			if (!room.passthebomb) return this.sendReply("There is no game of Pass The Bomb going on in this room.");
+			room.passthebomb.leave(user.userid, this);
+		},
+		forcestart: function (target, room, user) {
+			if (!room.passthebomb) return this.sendReply("There is no game of Pass The Bomb going on in this room.");
+			if (!this.canTalk()) return this.errorReply("You cannot use this while unable to speak.");
+			if (!user.can('ban', null, room)) return this.sendReply("You must be ranked @ or higher in this room to forcibly started the first round of a game of Pass The Bomb.");
+			if (room.passthebomb.round) return this.sendReply('This game of Pass The Bomb has already begun!');
+			if (room.passthebomb.players.size < 4) return this.sendReply('There aren\'t enough players yet. Wait for more to join!');
+			room.add('(' + user.name + ' forcibly started round 1)');
+			room.passthebomb.nextRound();
+		},
+		disqualify: 'dq',
+		dq: function (target, room, user) {
+			if (!room.passthebomb) return this.sendReply("There is no game of Pass The Bomb going on in this room.");
+			if (!this.canTalk()) return this.errorReply("You cannot use this while unable to speak.");
+			if (!user.can('ban', null, room)) return this.sendReply("You must be ranked @ or higher in this room to disqualify a user from a game of Pass The Bomb.");
+			room.passthebomb.dq(user, target, this);
+		},
+		p: 'pass',
+		pass: function (target, room, user) {
+			if (!room.passthebomb) return this.sendReply("There is no game of Pass The Bomb going on in this room.");
+			if (!this.canTalk()) return this.errorReply("You cannot use this while unable to speak.");
+			room.passthebomb.pass(user, target, this);
+		},
+		end: function (target, room, user) {
+			if (!room.passthebomb) return this.sendReply("There is no game of Pass The Bomb going on in this room.");
+			if (!user.can('ban', null, room)) return this.sendReply("You must be ranked @ or higher in this room to end a game of Pass The Bomb.");
+			room.passthebomb.end(user);
+		},
+		'': 'help',
+		help: function (target, room, user) {
+			if (!this.runBroadcast()) return;
+			this.sendReplyBox(
+				'All commands is nestled under name <code>passthebomb/ptb</code>.',
+				'<code>start [seconds]</code> - Starts a game of Pass The Bomb in the room. The first round will begin after the mentioned number of seconds (1 minute by default). Requires @ or higher to use.',
+				'<code>join/leave</code> - Joins/Leaves a game of Pass The Bomb.',
+				'<code>forcestart</code> - Forcibly starts the first round of a game. Requires @ or higher to use.',
+				'<code>dq [user]</code> - Disqualifies a player from a game of Pass The Bomb. Requires @ or higher to use.',
+				'<code>p [user]</code> - Passes the bomb to another player. (NOTE: Spamming this can get you disqualified)',
+				'<code>end</code> - Forcibly ends a game of Pass The Bomb. Requires @ or higher to use.',
+				'<code>on/off</code> - Enable/Disable the game of pass the bomb in room. Requires # or higher to use.',
+				'(/ptb is a valid alias for /passthebomb)'
+			);
+		},
 	},
-	join: function (target, room, user) {
-		if (!room.passthebomb) return this.sendReply("There is no game of Pass The Bomb going on in this room.");
-		if (!this.canTalk()) return this.errorReply("You cannot use this while unable to speak.");
-
-		room.passthebomb.join(user, this);
-	},
-	leave: function (target, room, user) {
-		if (!room.passthebomb) return this.sendReply("There is no game of Pass The Bomb going on in this room.");
-
-		room.passthebomb.leave(user.userid, this);
-	},
-	proceed: function (target, room, user) {
-		if (!room.passthebomb) return this.sendReply("There is no game of Pass The Bomb going on in this room.");
-		if (!this.canTalk()) return this.errorReply("You cannot use this while unable to speak.");
-		if (!user.can('ban', null, room)) return this.sendReply("You must be ranked @ or higher in this room to forcibly begin the first round of a game of Pass The Bomb.");
-
-		if (room.passthebomb.round) return this.sendReply('This game of Pass The Bomb has already begun!');
-		if (room.passthebomb.players.size < 4) return this.sendReply('There aren\'t enough players yet. Wait for more to join!');
-		room.add('(' + user.name + ' forcibly started round 1)');
-		room.passthebomb.nextRound();
-	},
-	disqualify: 'dq',
-	dq: function (target, room, user) {
-		if (!room.passthebomb) return this.sendReply("There is no game of Pass The Bomb going on in this room.");
-		if (!this.canTalk()) return this.errorReply("You cannot use this while unable to speak.");
-		if (!user.can('ban', null, room)) return this.sendReply("You must be ranked @ or higher in this room to disqualify a user from a game of Pass The Bomb.");
-
-		room.passthebomb.dq(user, target, this);
-	},
-	passbomb: 'pass',
-	pass: function (target, room, user) {
-		if (!room.passthebomb) return this.sendReply("There is no game of Pass The Bomb going on in this room.");
-		if (!this.canTalk()) return this.errorReply("You cannot use this while unable to speak.");
-
-		room.passthebomb.pass(user, target, this);
-	},
-	cancel: 'end',
-	end: function (target, room, user) {
-		if (!room.passthebomb) return this.sendReply("There is no game of Pass The Bomb going on in this room.");
-		if (!user.can('ban', null, room)) return this.sendReply("You must be ranked @ or higher in this room to end a game of Pass The Bomb.");
-
-		room.passthebomb.end(user);
-	},
-};
-
-exports.commands = {
-	ptb: 'passthebomb',
-	passthebomb: commands,
-	pb: 'passbomb',
-	passbomb: commands.pass,
-	passthebombhelp: [
-		'/passthebomb start [seconds] - Starts a game of Pass The Bomb in the room. The first round will begin after the mentioned number of seconds (1 minute by default). Requires @ or higher to use.',
-		'/passthebomb join/leave - Joins/Leaves a game of Pass The Bomb.',
-		'/passthebomb proceed - Forcibly starts the first round of a game. Requires @ or higher to use.',
-		'/passthebomb dq [user] - Disqualifies a player from a game of Pass The Bomb. Requires @ or higher to use.',
-		'/passthebomb pass [user] - Passes the bomb to another player. (NOTE: Spamming this can get you disqualified)',
-		'/passthebomb end - Forcibly ends a game of Pass The Bomb. Requires @ or higher to use.',
-		'/passthebomb on/off - Enable/Disable the game of pass the bomb in room. Requires # or higher to use.',
-		'(/ptb is a valid alias for /passthebomb)',
-	],
 };
